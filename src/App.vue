@@ -35,8 +35,9 @@ export default {
   watch: {
     todoItems: function(){
       if(!this.showFnc){
+        // '보기' 기능은 localStorage 값 바꾸지 않음, 단순히 필터되서 보여지게만 함
         this.showFnc = false;
-        localStorage.setItem("todos", JSON.stringify(this.todoItems));            // 로컬스토리지에 todos key에 array를 직렬화해서 value로 넣음
+        localStorage.setItem("todos", JSON.stringify(this.todoItems));
       }
     }
   },
@@ -68,7 +69,7 @@ export default {
 
     /** 메서드5 : 전체/완료/미완료 항목보기 **/
     showTodoItems(type){
-      this.showFnc = true;    // '보기' 기능은 localStorage 값 바꾸지 않음, 단순히 필터되서 보여지게만 함
+      this.showFnc = true;
 
       const todoList = localStorage.getItem('todos');
       if(todoList != null)
