@@ -1,12 +1,12 @@
 <template>
   <v-row>
-    <v-col class="col-6">
+    <v-col cols="6">
       <v-btn elevation="2" small rounded @click="clearTodo">전체삭제</v-btn>
       <v-btn elevation="2" small rounded @click="clearComp"
         >완료항목 삭제</v-btn
       >
     </v-col>
-    <v-col class="col-6">
+    <v-col cols="6">
       <v-btn elevation="2" small rounded @click="showTodoItems(0)"
         >전체 항목보기</v-btn
       >
