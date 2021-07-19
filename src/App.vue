@@ -98,7 +98,6 @@ export default {
   methods: {
     /** 메서드1 : 할일 추가 **/
     addText(value) {
-      console.log("hi");
       this.todoItems = [
         ...this.todoItems,
         { id: new Date().getTime(), value: value, completed: false }
