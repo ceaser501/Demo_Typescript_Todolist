@@ -1,19 +1,15 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="btnComm col-md-5">
-          <v-btn elevation="2" small rounded v-on:click="clearTodo">전체삭제</v-btn>
-          <v-btn elevation="2" small rounded v-on:click="clearComp">완료항목 삭제</v-btn>
-        </div>
-        <div class="btnComm btnGrpRight col-md-7">
-          <v-btn elevation="2" small rounded v-on:click="showTodoItems('ALL')">전체 항목보기</v-btn>
-          <v-btn elevation="2" small rounded v-on:click="showTodoItems('DONE')">완료 항목보기</v-btn>
-          <v-btn elevation="2" small rounded v-on:click="showTodoItems('YET')">미완료 항목보기</v-btn>
-        </div>
-      </div>
+  <v-row>
+    <div class="col-6">
+      <v-btn elevation="2" small rounded @click="clearTodo">전체삭제</v-btn>
+      <v-btn elevation="2" small rounded @click="clearComp">완료항목 삭제</v-btn>
     </div>
-  </div>
+    <div class="col-6">
+      <v-btn elevation="2" small rounded @click="showTodoItems(0)">전체 항목보기</v-btn>
+      <v-btn elevation="2" small rounded @click="showTodoItems(1)">완료 항목보기</v-btn>
+      <v-btn elevation="2" small rounded @click="showTodoItems(2)">미완료 항목보기</v-btn>
+    </div>
+  </v-row>
 </template>
 
 <script>
@@ -28,6 +24,4 @@ export default {
 </script>
 
 <style scoped>
-.btnComm{float:left;}
-.btnGrpRight{text-align:right;}
 </style>

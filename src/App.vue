@@ -1,86 +1,130 @@
 <template>
-  <div id="app">
-    <TodoHeader></TodoHeader>
-    <TodoAdd v-on:addTodo="addTodo"></TodoAdd>
-    <TodoList v-bind:propsdata="todoItems"
-              v-on:removeTodo="removeTodo"
-              v-on:addTodo="addTodo"></TodoList>
-    <TodoFooter v-on:removeAll="clearAll"
-                v-on:removeComp="clearComp"
-                v-on:showTodoItems="showTodoItems"></TodoFooter>
-  </div>
+  <v-app>
+    <v-main>
+      <v-container class="col-6">
+        <!-- HEADER -->
+        <v-row class="text-center">
+          <v-col>
+            <h1 class="font-weight-bold font-italic">TODO LIST!</h1>
+          </v-col>
+        </v-row>
+
+        <!-- ADD -->
+        <v-row>
+          <v-col>
+            <todo-add @addText="addText"></todo-add>
+          </v-col>
+        </v-row>
+
+        <!-- LIST -->
+        <v-row>
+          <v-col>
+            <v-card>
+              <v-list>
+                <div v-if="todoItems.length == 0">
+                  <v-list-item>
+                    <v-list-item-content>데이터가 없습니다.</v-list-item-content>
+                  </v-list-item>
+                </div>
+                <div v-else>
+                    <todo-list v-for="(item, index) in filteredTodoItems"
+                        :todoItem.sync="filteredTodoItems[index]"
+                        :key="filteredTodoItems[index].id"
+                        @removeTodo="removeTodo"></todo-list>
+                </div>
+              </v-list>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <!-- FOOTER -->
+        <v-row>
+          <v-col>
+                <todo-footer @removeAll="clearAll"
+                             @removeComp="clearComp"
+                             @showTodoItems="showTodoItems">
+                </todo-footer>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+  </v-app>
+
+
 </template>
 
 <script>
 /** 컴포넌트 IMPORT **/
-import TodoHeader from './components/TodoHeader';
 import TodoAdd from './components/TodoAdd';
 import TodoList from './components/TodoList';
 import TodoFooter from './components/TodoFooter';
+
+const LOC_STRG_KEY = "todos";
 
 export default {
   data(){
     return {
       todoItems: [],
-      showFnc: false
+      filteredType: ''
     }
   },
-  /** create()는 라이프 사이클 단계 중 data 속성과 methods 속성이 정의된 후 실행 **/
   created(){
-    this.showFnc = false;
-    const todoList = localStorage.getItem('todos');
-    if(todoList != null)
-      this.todoItems = JSON.parse(todoList);
+    this.filteredType = 0;    // 초기 값은 전체조회
+    this.todoItems = JSON.parse(localStorage.getItem(LOC_STRG_KEY)) || [];
   },
   watch: {
     todoItems: function(){
-      if(!this.showFnc){
-        // '보기' 기능은 localStorage 값 바꾸지 않음, 단순히 필터되서 보여지게만 함
-        this.showFnc = false;
-        localStorage.setItem("todos", JSON.stringify(this.todoItems));
+      localStorage.setItem("todos", JSON.stringify(this.todoItems));
+    }
+  },
+  computed: {
+    filteredTodoItems: function (){
+      let rtnItems = [];
+
+      switch(this.filteredType){
+          case 0 :
+            rtnItems = this.todoItems;
+            break;
+          case 1:
+            rtnItems = this.todoItems.filter( item => item.completed );
+            break;
+          case 2:
+            rtnItems = this.todoItems.filter( item => !item.completed );
+            break;
+          default :
+            rtnItems = [];
+            break;
       }
+      return rtnItems;
     }
   },
   methods: {
     /** 메서드1 : 할일 추가 **/
-    addTodo(id, value, completed){
-      this.showFnc = false;
-      this.todoItems.push({id : id, value : value, completed : completed});
-      this.todoItems.sort( (a, b) => parseInt(b.id) - parseInt(a.id) );     // 완료/미완료 상태 변경 (remove -> push -> sort), 등록시간이 최신일 수록 위로
+    addText(value){
+      this.todoItems = [...this.todoItems, {id : new Date().getTime(), value : value, completed : false}];
     },
 
     /** 메서드2 : 건별삭제 **/
     removeTodo(todoItem) {
-      this.showFnc = false;
-      this.todoItems.splice(this.todoItems.findIndex((item) => {return item.id === todoItem.id}), 1);
+      this.todoItems =  this.todoItems.filter((item) => item.id != todoItem.id);
     },
 
     /** 메서드3 : 전체삭제 **/
     clearAll(){
-        this.showFnc = false;
         this.todoItems = [];
     },
 
     /** 메서드4 : 완료항목 삭제 **/
     clearComp(){
-      this.showFnc = false;
       this.todoItems = this.todoItems.filter( (item) => !item.completed);
     },
 
     /** 메서드5 : 전체/완료/미완료 항목보기 **/
     showTodoItems(type){
-      this.showFnc = true;
-
-      const todoList = localStorage.getItem('todos');
-      if(todoList != null)
-        this.todoItems = JSON.parse(todoList);
-
-      if(type !== "ALL")
-        this.todoItems = this.todoItems.filter( (item) => (type === "DONE" ? item.completed : !item.completed) );
+      this.filteredType = type;
     }
   },
   components: {
-    'TodoHeader': TodoHeader,
     'TodoAdd': TodoAdd,
     'TodoList': TodoList,
     'TodoFooter': TodoFooter

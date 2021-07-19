@@ -1,16 +1,15 @@
 <template>
-  <div class="container">
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="input-group mb-2">
-            <input type="text" class="form-control" v-model="newTodoItem" v-on:keyup.enter="addTodo" placeholder="할일을 입력하세요"/>
-            <span class="input-group-btn">
-              <button type="button" class="form-control" v-on:click="addTodo">추가</button>
-            </span>
-          </div>
-        </div>
-      </div>
-  </div>
+  <v-row class="text-center">
+    <v-text-field
+        label="할 일을 입력하세요."
+        v-model.trim="newTodoText"
+        @keyup.enter="addTodo"
+        hide-details="auto">
+        <template v-slot:append>
+          <v-btn elevation="2" @click="addTodo" depressed tile class="ma-0">추가</v-btn>
+        </template>
+    </v-text-field>
+  </v-row>
 </template>
 
 <script>
@@ -18,22 +17,20 @@ export default {
   name: "TodoAdd",
   data(){
     return {
-      newTodoItem: ''
+      newTodoText: ''
     }
   },
   methods: {
     addTodo() {
-      if(this.newTodoItem !== ''){
-        let value = this.newTodoItem && this.newTodoItem.trim();
-        let timestamp = new Date().getTime();                   // key(id) == timestamp
-        this.$emit('addTodo', timestamp, value, false);
-
-        this.clearInputbox();
+      if (this.newTodoText) {
+        if(confirm('저장하시겠습니까?')){
+          this.$emit('addText', this.newTodoText);
+          this.$nextTick(() => (this.newTodoText = ''));
+        }
+      }else{
+        alert("[필수] 할일을 입력 해 주세요.")
       }
-    },
-    clearInputbox(){
-      this.newTodoItem = '';
-    },
+    }
   }
 }
 </script>
