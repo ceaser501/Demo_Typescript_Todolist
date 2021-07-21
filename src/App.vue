@@ -86,7 +86,7 @@ export default class App extends Vue {
 
   /** created **/
   created(): void {
-    this.filteredType = 0; // 초기 값은 전체조회
+    // this.filteredType = 0; // 초기 값은 전체조회
     this.todoItems = JSON.parse(
       localStorage.getItem(this.LOC_STRG_KEY) || "[]"
     );
@@ -102,13 +102,12 @@ export default class App extends Vue {
   get filteredTodoItems(): TodoItem[] {
     switch (this.filteredType) {
       case 0:
+      default:
         return this.todoItems;
       case 1:
         return this.todoItems.filter(item => item.completed);
       case 2:
         return this.todoItems.filter(item => !item.completed);
-      default:
-        return [];
     }
   }
 
@@ -120,7 +119,6 @@ export default class App extends Vue {
         { id: new Date().getTime().toString(), value: value, completed: false }
       ];
     }
-    this.filteredType = 0; // 초기 값은 전체조회
   }
 
   /** 메서드2 : 건별삭제 **/
