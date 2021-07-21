@@ -4,7 +4,7 @@
       <v-list-item-icon
         :class="{ done: todoItem.completed, yet: !todoItem.completed }"
       >
-        <font-awesome-icon icon="check" @click="toggleComplete()" />
+        <font-awesome-icon icon="check" @click="toggleComplete" />
       </v-list-item-icon>
     </v-col>
     <v-col class="col-8 listStyle">
@@ -20,8 +20,8 @@
       >
     </v-col>
     <v-col class="col-1 listStyle">
-      <font-awesome-icon icon="edit" class="fas" @click="editTodo()" />&nbsp;
-      <font-awesome-icon icon="trash" class="del" @click="removeTodo()" />
+      <font-awesome-icon icon="edit" class="fas" @click="editTodo" />&nbsp;
+      <font-awesome-icon icon="trash" class="del" @click="removeTodo" />
     </v-col>
   </v-list-item>
 </template>
