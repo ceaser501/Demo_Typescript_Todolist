@@ -78,11 +78,11 @@ import TodoFooter from "@/components/TodoFooter.vue";
 })
 export default class App extends Vue {
   /** 상수변수 선언 **/
-  LOC_STRG_KEY: string = "todos";
+  LOC_STRG_KEY = "todos";
 
   /** 변수선언 **/
   todoItems: TodoItem[] = [];
-  filteredType: number = 0;
+  filteredType = 0;
 
   /** created **/
   created(): void {

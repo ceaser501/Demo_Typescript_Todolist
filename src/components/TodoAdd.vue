@@ -20,7 +20,7 @@ import { Component, Emit, Vue } from "vue-property-decorator";
 @Component
 export default class TodoAdd extends Vue {
   /**  변수 선언 **/
-  newTodoText: string = "";
+  newTodoText = "";
 
   /** 할일 추가 기능 **/
   @Emit("add-text")
