@@ -20,21 +20,25 @@
   </v-row>
 </template>
 
-<script>
-export default {
-  name: "TodoFooter",
-  methods: {
-    clearTodo() {
-      this.$emit("remove-all");
-    },
-    clearComp() {
-      this.$emit("remove-comp");
-    },
-    showTodoItems(type) {
-      this.$emit("show-todo-items", type);
-    }
+<script lang="ts">
+import { Component, Emit, Vue } from "vue-property-decorator";
+
+@Component
+export default class TodoFooter extends Vue {
+  /** 전체삭제 기능 **/
+  @Emit("remove-all")
+  clearTodo(): void {}
+
+  /** 완료삭제 기능 **/
+  @Emit("remove-comp")
+  clearComp(): void {}
+
+  /** 전체, 완료, 미완료 보기 기능 **/
+  @Emit("show-todo-items")
+  showTodoItems(type: number): number {
+    return type;
   }
-};
+}
 </script>
 
 <style scoped></style>

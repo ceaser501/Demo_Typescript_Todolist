@@ -21,36 +21,39 @@
     </v-col>
     <v-col class="col-1 listStyle">
       <font-awesome-icon icon="edit" class="fas" @click="editTodo()" />&nbsp;
-      <font-awesome-icon
-        icon="trash"
-        class="del"
-        @click="removeTodo(todoItem.id)"
-      />
+      <font-awesome-icon icon="trash" class="del" @click="removeTodo()" />
     </v-col>
   </v-list-item>
 </template>
 
-<script>
-export default {
-  name: "TodoList",
-  props: ["todoItem"],
-  methods: {
-    removeTodo(todoItemId) {
-      this.$emit("remove-todo", todoItemId);
-    },
-    toggleComplete() {
-      this.todoItem.completed = !this.todoItem.completed;
-      this.$emit("update:todo-item", this.todoItem);
-    },
-    editTodo() {
-      if (this.todoItem.value) {
-        this.$emit("update:todo-item", this.todoItem);
-      } else {
-        alert("[필수] 수정할 일을 입력 해 주세요.");
-      }
+<script lang="ts">
+import { Component, PropSync, Emit, Vue } from "vue-property-decorator";
+import { TodoItem } from "@/types/types";
+
+@Component
+export default class TodoList extends Vue {
+  @PropSync("todo") todoItem!: TodoItem;
+
+  /** 완료처리 기능 **/
+  toggleComplete(): void {
+    this.todoItem = { ...this.todoItem, completed: !this.todoItem.completed };
+  }
+
+  /** 수정기능 **/
+  editTodo(): void {
+    if (this.todoItem.value) {
+      this.todoItem = { ...this.todoItem };
+    } else {
+      alert("[필수] 수정할 일을 입력 해 주세요.");
     }
   }
-};
+
+  /** 삭제기능 **/
+  @Emit("remove-todo")
+  removeTodo(): string {
+    return this.todoItem.id;
+  }
+}
 </script>
 
 <style scoped>

@@ -21,7 +21,7 @@
           <v-col>
             <v-card>
               <v-list>
-                <div v-if="todoItems.length == 0">
+                <div v-if="todoItems.length === 0">
                   <v-list-item>
                     <v-list-item-content
                       >데이터가 없습니다.</v-list-item-content
@@ -31,7 +31,9 @@
                 <div v-else>
                   <todo-list
                     v-for="(item, index) in filteredTodoItems"
-                    :todo-item.sync="filteredTodoItems[index]"
+                    :todo.sync="
+                      filteredTodoItems[filteredTodoItems.length - 1 - index]
+                    "
                     :key="filteredTodoItems[index].id"
                     @remove-todo="removeTodo"
                   ></todo-list>
@@ -57,77 +59,88 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 /** 컴포넌트 IMPORT **/
-import TodoAdd from "./components/TodoAdd";
-import TodoList from "./components/TodoList";
-import TodoFooter from "./components/TodoFooter";
+import { Component, Watch, Vue } from "vue-property-decorator";
+import { TodoItem } from "@/types/types";
 
-const LOC_STRG_KEY = "todos";
+import TodoAdd from "@/components/TodoAdd.vue";
+import TodoList from "@/components/TodoList.vue";
+import TodoFooter from "@/components/TodoFooter.vue";
 
-export default {
-  data() {
-    return {
-      todoItems: [],
-      filteredType: ""
-    };
-  },
-  created() {
+/** 컴포넌트 등록 **/
+@Component({
+  components: {
+    TodoAdd,
+    TodoList,
+    TodoFooter
+  }
+})
+export default class App extends Vue {
+  /** 상수변수 선언 **/
+  LOC_STRG_KEY: string = "todos";
+
+  /** 변수선언 **/
+  todoItems: TodoItem[] = [];
+  filteredType: number = 0;
+
+  /** created **/
+  created(): void {
     this.filteredType = 0; // 초기 값은 전체조회
-    this.todoItems = JSON.parse(localStorage.getItem(LOC_STRG_KEY)) || [];
-  },
-  watch: {
-    todoItems: function() {
-      localStorage.setItem("todos", JSON.stringify(this.todoItems));
+    this.todoItems = JSON.parse(
+      localStorage.getItem(this.LOC_STRG_KEY) || "{}"
+    );
+  }
+
+  /** Watch **/
+  @Watch("todoItems")
+  watchTodoItems(): void {
+    localStorage.setItem("todos", JSON.stringify(this.todoItems));
+  }
+
+  /** Computed **/
+  get filteredTodoItems(): TodoItem[] {
+    switch (this.filteredType) {
+      case 0:
+        return this.todoItems;
+      case 1:
+        return this.todoItems.filter(item => item.completed);
+      case 2:
+        return this.todoItems.filter(item => !item.completed);
+      default:
+        return [];
     }
-  },
-  computed: {
-    filteredTodoItems: function() {
-      switch (this.filteredType) {
-        case 0:
-          return this.todoItems;
-        case 1:
-          return this.todoItems.filter(item => item.completed);
-        case 2:
-          return this.todoItems.filter(item => !item.completed);
-        default:
-          return [];
-      }
-    }
-  },
-  methods: {
-    /** 메서드1 : 할일 추가 **/
-    addText(value) {
+  }
+
+  /** 메서드1 : 할일추가 **/
+  addText(value: string): void {
+    if (value) {
       this.todoItems = [
         ...this.todoItems,
-        { id: new Date().getTime(), value: value, completed: false }
+        { id: new Date().getTime().toString(), value: value, completed: false }
       ];
-    },
-
-    /** 메서드2 : 건별삭제 **/
-    removeTodo(todoItemId) {
-      this.todoItems = this.todoItems.filter(item => item.id != todoItemId);
-    },
-
-    /** 메서드3 : 전체삭제 **/
-    clearAll() {
-      this.todoItems = [];
-    },
-
-    /** 메서드4 : 완료항목 삭제 **/
-    clearComp() {
-      this.todoItems = this.todoItems.filter(item => !item.completed);
-    },
-
-    /** 메서드5 : 전체/완료/미완료 항목보기 **/
-    showTodoItems(type) {
-      this.filteredType = type;
     }
-  },
-  components: {
-    TodoAdd: TodoAdd,
-    TodoList: TodoList,
-    TodoFooter: TodoFooter
+    this.filteredType = 0; // 초기 값은 전체조회
   }
-};
+
+  /** 메서드2 : 건별삭제 **/
+  removeTodo(todoItemId: string): void {
+    this.todoItems = this.todoItems.filter(item => item.id !== todoItemId);
+  }
+
+  /** 메서드3 : 전체삭제 **/
+  clearAll(): void {
+    this.todoItems = [];
+  }
+
+  /** 메서드4 : 완료항목 삭제 **/
+  clearComp(): void {
+    this.todoItems = this.todoItems.filter(item => !item.completed);
+  }
+
+  /** 메서드5 : 전체/완료/미완료 항목보기 **/
+  showTodoItems(type: number): void {
+    this.filteredType = type;
+  }
+}
 </script>
