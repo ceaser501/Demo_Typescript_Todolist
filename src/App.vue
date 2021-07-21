@@ -88,7 +88,7 @@ export default class App extends Vue {
   created(): void {
     this.filteredType = 0; // 초기 값은 전체조회
     this.todoItems = JSON.parse(
-      localStorage.getItem(this.LOC_STRG_KEY) || "{}"
+      localStorage.getItem(this.LOC_STRG_KEY) || "[]"
     );
   }
 
