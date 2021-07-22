@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class TodoAdd extends Vue {
@@ -23,14 +23,14 @@ export default class TodoAdd extends Vue {
   newTodoText = "";
 
   /** 할일 추가 기능 **/
-  @Emit("add-text")
-  addTodo(): string {
+  addTodo(): void {
     if (this.newTodoText && confirm("저장하시겠습니까?")) {
-      this.$nextTick(() => (this.newTodoText = ""));
-      return this.newTodoText;
+      this.$emit("add-text", this.newTodoText);
+      this.$nextTick(() => {
+        this.newTodoText = "";
+      });
     } else {
       alert("[필수] 할일을 입력 해 주세요.");
-      return "";
     }
   }
 }
