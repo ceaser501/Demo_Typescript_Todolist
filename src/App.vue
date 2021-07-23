@@ -100,13 +100,13 @@ export default class App extends Vue {
   /** Computed **/
   get filteredTodoItems(): TodoItem[] {
     switch (this.filteredType) {
-      case 0:
-      default:
-        return this.todoItems;
       case 1:
         return this.todoItems.filter(item => item.completed);
       case 2:
         return this.todoItems.filter(item => !item.completed);
+      case 0:
+      default:
+        return this.todoItems;
     }
   }
 
