@@ -94,7 +94,6 @@ export default class App extends Vue {
   /** Watch **/
   @Watch("todoItems")
   watchTodoItems(): void {
-    this.filteredType = 0; //todoItems 변경점이 발생하는 경우 무조건 초기 전체보기 상태로 list 호출
     localStorage.setItem("todos", JSON.stringify(this.todoItems));
   }
 
@@ -119,6 +118,7 @@ export default class App extends Vue {
         { id: new Date().getTime().toString(), value: value, completed: false }
       ];
     }
+    this.filteredType = 0;
   }
 
   /** 메서드2 : 건별삭제 **/
