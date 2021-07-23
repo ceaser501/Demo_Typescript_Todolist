@@ -86,7 +86,6 @@ export default class App extends Vue {
 
   /** created **/
   created(): void {
-    // this.filteredType = 0; // 초기 값은 전체조회
     this.todoItems = JSON.parse(
       localStorage.getItem(this.LOC_STRG_KEY) || "[]"
     );
@@ -95,6 +94,7 @@ export default class App extends Vue {
   /** Watch **/
   @Watch("todoItems")
   watchTodoItems(): void {
+    this.filteredType = 0; //todoItems 변경점이 발생하는 경우 무조건 초기 전체보기 상태로 list 호출
     localStorage.setItem("todos", JSON.stringify(this.todoItems));
   }
 
